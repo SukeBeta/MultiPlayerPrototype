@@ -87,7 +87,7 @@ BasicGame.Game.prototype = {
 
         // Player
         this.player = this.newPlayer(46, 26);
-        this.otherPlayers = {};
+        this.otherPlayers = [];
 
         
 
@@ -196,16 +196,27 @@ BasicGame.Game.prototype = {
         }
 
         if (this.uid != null) {
+            // Uncomment to debug
+            //console.dir(self.player);
+            //console.dir(self.otherPlayers);
 	        update(this.uid, this.player.x, this.player.y, function(list) {
 	        	for (key in list) {
 	        		var player = list[key];
 	        		console.log(player.uid, player.x, player.y);
-	        		if (!self.otherPlayers[player.uid]) {
-	        			self.otherPlayers[player.uid] = self.newPlayer(player.x, player.y);
-	        		} else {
-	        			self.otherPlayers[player.uid].anchor.setTo(player.x, player.y);
-	        		}
-	        		self.otherPlayers[player.uid].animations.stop();
+
+                    // TODO: this part is modified by Geyang, please review carefully
+                    // Do not update the player
+                    if (player.uid != self.uid) {
+                        if (!self.otherPlayers[player.uid]) {
+                            self.otherPlayers[player.uid] = self.newPlayer(player.x, player.y);
+                        } else {
+                            // TODO: BUGS ARE HERE: because anchor.setTo is the wrong function to use to update position
+                            //self.otherPlayers[player.uid].anchor.setTo(player.x, player.y);
+                            self.otherPlayers[player.uid].x = player.x;
+                            self.otherPlayers[player.uid].y = player.y;
+                        }
+                        self.otherPlayers[player.uid].animations.stop();
+                    }
 	        	}
 	        })
 	    }

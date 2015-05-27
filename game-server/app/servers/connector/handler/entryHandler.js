@@ -10,9 +10,10 @@ var Player = function() {
 	this.uid;
 	this.x;
 	this.y;
-}
+};
 
-var players = {}
+var players = {};
+var nextUid = 0;
 
 /**
  * New client entry.
@@ -23,8 +24,10 @@ var players = {}
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-	var uid = parseInt(Math.random()*10000)
-	while (players[uid]) uid = parseInt(Math.random()*10000)
+    var uid = nextUid++;
+    // part modified by Geyang
+    //var uid = parseInt(Math.random()*10000);
+    //while (players[uid]) uid = parseInt(Math.random()*10000);
 	players[uid] = new Player();
 	players[uid].uid = uid;
 	next(null, {code: 200, uid: uid});
