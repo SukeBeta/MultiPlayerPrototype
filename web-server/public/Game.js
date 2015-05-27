@@ -39,6 +39,8 @@ BasicGame.Game.prototype = {
         res.animations.add('up', [12, 13, 14, 15], 4, true);
 
         this.game.physics.arcade.enable(res);
+
+        res.body.setSize(10, 10, 0, 20);
         return res
 	},
 
@@ -47,102 +49,102 @@ BasicGame.Game.prototype = {
     	connect(function(uid) {
     		console.log(uid);
     		self.uid = uid;
-
-    		// Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
-	        // Initial states
-	        self.game.stage.backgroundColor = '#3498db';
-	        self.game.physics.startSystem(Phaser.Physics.ARCADE);
-	        self.stage.backgroundColor = '#787878';
-
-	        // Map
-	        self.map = self.add.tilemap('map');
-
-	        // The first parameter is the tileset name as specified in Tiled, the second is the key to the asset.
-	        self.map.addTilesetImage('map10', 'tiles');
-
-	        // Create layer
-	        self.blockedLayer = self.map.createLayer('Tile Layer 1');
-	        self.map.setCollision(8, true, self.blockedLayer);
-
-	        // Berries
-	        self.berries = self.game.add.group();
-
-	        // Obstacles
-	        self.obstacles = self.game.add.group();
-	        self.obstacles.enableBody = true;
-	        self.map.createFromObjects('Object Layer 1', 9, 'obstacle01', 0, true, false, self.obstacles);
-	        self.obstacles.callAll('animations.add', 'animations', 'explode', [0, 1, 2, 3, 4, 5], 6, true);
-	        self.obstacles.setAll('body.immovable', true);
-
-	        // Kill obstacle after the animation is finished
-	        self.obstacles.forEach(function(obstacle) {
-	            obstacle.events.onAnimationComplete.add(function(){
-	                obstacle.kill();
-	            }, this);
-	        }, this);
-
-
-	        // Player
-	        self.player = self.newPlayer(46, 26);
-
-	        // This adjusts the collision body size.
-	        self.player.body.setSize(10, 10, 0, 20);
-
-	        // Emitter
-	        self.emitter = self.game.add.emitter(0, 0);
-	        self.emitter.gravity = 0;
-	        self.emitter.minRotation = 0;
-	        self.emitter.maxRotation = 0;
-	        self.emitter.bounce.setTo(0.5, 0.5);
-	        self.emitter.setXSpeed(-100, 100);
-	        self.emitter.setYSpeed(-100, 100);
-
-	        /**
-	        // Keyboard
-	        upKey = self.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-	        upKey.onDown.add(function() {
-	            self.player.loadTexture('panda_up', 0);
-	            self.player.animations.add('walk');
-	            self.player.animations.play('walk', 10, true);
-
-	            self.player.body.velocity.y = 0;
-	            self.player.body.velocity.y -= self.speed;
-	        }, this);
-
-	        downKey = self.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-	        downKey.onDown.add(function() {
-	            self.player.loadTexture('panda_down', 0);
-	            self.player.animations.add('walk');
-	            self.player.animations.play('walk', 10, true);
-
-	            self.player.body.velocity.y = 0;
-	            self.player.body.velocity.y += self.speed;
-	        }, this);
-
-	        leftKey = self.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-	        leftKey.onDown.add(function() {
-	            self.player.loadTexture('panda_left', 0);
-	            self.player.animations.add('walk');
-	            self.player.animations.play('walk', 10, true);
-
-	            self.player.body.velocity.x = 0;
-	            self.player.body.velocity.x -= self.speed;
-	        }, this);
-
-	        rightKey = self.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	        rightKey.onDown.add(function() {
-	            self.player.loadTexture('panda_right', 0);
-	            self.player.animations.add('walk');
-	            self.player.animations.play('walk', 10, true);
-
-	            self.player.body.velocity.x = 0;
-	            self.player.body.velocity.x += self.speed;
-	        }, this);
-	        **/
-
-	        self.cursors = self.game.input.keyboard.createCursorKeys();
-	        self.hitButton = self.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     	});
+
+        // Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
+        // Initial states
+        this.game.stage.backgroundColor = '#3498db';
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.stage.backgroundColor = '#787878';
+
+        // Map
+        this.map = this.add.tilemap('map');
+
+        // The first parameter is the tileset name as specified in Tiled, the second is the key to the asset.
+        this.map.addTilesetImage('map10', 'tiles');
+
+        // Create layer
+        this.blockedLayer = this.map.createLayer('Tile Layer 1');
+        this.map.setCollision(8, true, this.blockedLayer);
+
+        // Berries
+        this.berries = this.game.add.group();
+
+        // Obstacles
+        this.obstacles = this.game.add.group();
+        this.obstacles.enableBody = true;
+        this.map.createFromObjects('Object Layer 1', 9, 'obstacle01', 0, true, false, this.obstacles);
+        this.obstacles.callAll('animations.add', 'animations', 'explode', [0, 1, 2, 3, 4, 5], 6, true);
+        this.obstacles.setAll('body.immovable', true);
+
+        // Kill obstacle after the animation is finished
+        this.obstacles.forEach(function(obstacle) {
+            obstacle.events.onAnimationComplete.add(function(){
+                obstacle.kill();
+            }, this);
+        }, this);
+
+
+        // Player
+        this.player = this.newPlayer(46, 26);
+        this.otherPlayers = {};
+
+        
+
+        // Emitter
+        this.emitter = this.game.add.emitter(0, 0);
+        this.emitter.gravity = 0;
+        this.emitter.minRotation = 0;
+        this.emitter.maxRotation = 0;
+        this.emitter.bounce.setTo(0.5, 0.5);
+        this.emitter.setXSpeed(-100, 100);
+        this.emitter.setYSpeed(-100, 100);
+
+        /**
+        // Keyboard
+        upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        upKey.onDown.add(function() {
+            this.player.loadTexture('panda_up', 0);
+            this.player.animations.add('walk');
+            this.player.animations.play('walk', 10, true);
+
+            this.player.body.velocity.y = 0;
+            this.player.body.velocity.y -= this.speed;
+        }, this);
+
+        downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        downKey.onDown.add(function() {
+            this.player.loadTexture('panda_down', 0);
+            this.player.animations.add('walk');
+            this.player.animations.play('walk', 10, true);
+
+            this.player.body.velocity.y = 0;
+            this.player.body.velocity.y += this.speed;
+        }, this);
+
+        leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        leftKey.onDown.add(function() {
+            this.player.loadTexture('panda_left', 0);
+            this.player.animations.add('walk');
+            this.player.animations.play('walk', 10, true);
+
+            this.player.body.velocity.x = 0;
+            this.player.body.velocity.x -= this.speed;
+        }, this);
+
+        rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        rightKey.onDown.add(function() {
+            this.player.loadTexture('panda_right', 0);
+            this.player.animations.add('walk');
+            this.player.animations.play('walk', 10, true);
+
+            this.player.body.velocity.x = 0;
+            this.player.body.velocity.x += this.speed;
+        }, this);
+        **/
+
+        this.cursors = this.game.input.keyboard.createCursorKeys();
+        this.hitButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
     update: function () {
@@ -193,16 +195,20 @@ BasicGame.Game.prototype = {
             // this.player.frame = 4;
         }
 
-        console.log(this.uid, this.player.x, this.player.y);
-        update(this.uid, this.player.x, this.player.y, function(list) {
-        	for (player in list) {
-        		if (!self.otherPlayers[player.uid]) {
-        			self.otherPlayers[player.uid] = self.newPlayer(player.x, player.y);
-        		} else {
-        			self.otherPlayers[player.uid].anchor.setTo(player.x, player.y);
-        		}
-        	}
-        })
+        if (this.uid != null) {
+	        update(this.uid, this.player.x, this.player.y, function(list) {
+	        	for (key in list) {
+	        		var player = list[key];
+	        		console.log(player.uid, player.x, player.y);
+	        		if (!self.otherPlayers[player.uid]) {
+	        			self.otherPlayers[player.uid] = self.newPlayer(player.x, player.y);
+	        		} else {
+	        			self.otherPlayers[player.uid].anchor.setTo(player.x, player.y);
+	        		}
+	        		self.otherPlayers[player.uid].animations.stop();
+	        	}
+	        })
+	    }
 
     },
 

@@ -9,11 +9,9 @@ function connect(cb) {
 		port: port,
 		log: true
 	}, function() {
-		console.log("Yo");
 		pomelo.request(route, {}, function(data) {
-				console.log("Lo");
 				if (data.code != 200) {
-					alert(data);
+					console.log(data);
 					return;
 				}
 				cb(data.uid);
@@ -24,10 +22,10 @@ function connect(cb) {
 //Upload player's coordinate
 //Withdraw player list with coordinates
 function update(id, x, y, cb) {
-	var route = "connector.gameHandler.update";
+	var route = "connector.entryHandler.update";
 	pomelo.request(route, {uid: id, x:x, y:y}, function(data) {
 		if (data.code != 200) {
-			alert(data);
+			console.log(data);
 			return;
 		}
 		cb(data.list);

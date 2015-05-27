@@ -23,14 +23,15 @@ var players = {}
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-	console.log("Hey");
 	var uid = parseInt(Math.random()*10000)
-	while (players[uid]) uid = int(Math.random()*10000)
+	while (players[uid]) uid = parseInt(Math.random()*10000)
 	players[uid] = new Player();
+	players[uid].uid = uid;
 	next(null, {code: 200, uid: uid});
 };
 
 Handler.prototype.update = function(msg, session, next) {
+	console.log(msg);
 	players[msg.uid].x = msg.x;
 	players[msg.uid].y = msg.y;
 	next(null, {code:200, list: players});
